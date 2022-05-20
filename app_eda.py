@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import seaborn as sb
+import matplotlib.pyplot as plt
+import numpy as np
 
 def run_eda() :
     st.subheader('데이터 분석')
@@ -31,3 +33,32 @@ def run_eda() :
     st.dataframe(df_max)
     st.text('{}컬럼의 최소값에 해당하는 데이터 입니다.'.format(selected_col))
     st.dataframe(df_min)
+
+    # 유저가 선택한 컬럼들만, pairplot 그리고
+    # 그 아래, 상관계수를 보여준다.
+
+    selected_list = st.multiselect('컬럼들을 선택(최소2개)', col_list)
+    # print(selected_col)
+
+    if len(selected_list) >= 2 :
+        fig1 = sb.pairplot(data= car_df[selected_list])
+        st.pyplot(fig1)
+
+        st.text('선택하신 컬럼들의 상관계수 차트입니다.')
+        st.dataframe(car_df[selected_list].corr())
+
+        fig2 = plt.figure()
+        sb.heatmap(data= car_df[selected_list].corr(), annot=True, fmt='.2f', 
+           vmin = -1, vmax = 1, cmap='coolwarm', linewidths=0.5)
+        st.pyplot(fig2)
+
+
+    ### 고객 이름 컬럼을 검색할 수 있도록 만듭니다
+    ### he 라고 넣으면, he 가 이름에 들어있는 고객들의 데이터를 가져옵니다
+
+    # 1. 유저한테 검색어를 입력받는다
+    user_name = st.text_input('이름을 입력하세요')
+    # 2. 검색어를 고객이름 컬럼에 들어있는 데이터를 가져온다
+    inputed_name = st.dataframe(car_df.loc[car_df['Customer Name'].str.lower().str.contains('{}'.format(user_name.lower())),])
+    # 3. 화면에 보여준다.
+    st.text(inputed_name)

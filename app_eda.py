@@ -59,6 +59,6 @@ def run_eda() :
     # 1. 유저한테 검색어를 입력받는다
     user_name = st.text_input('이름을 입력하세요')
     # 2. 검색어를 고객이름 컬럼에 들어있는 데이터를 가져온다
-    inputed_name = st.dataframe(car_df.loc[car_df['Customer Name'].str.lower().str.contains('{}'.format(user_name.lower())),])
+    inputed_name = car_df.loc[car_df['Customer Name'].str.lower().str.contains('{}'.format(user_name.lower())),]
     # 3. 화면에 보여준다.
-    st.text(inputed_name)
+    st.dataframe(inputed_name)
